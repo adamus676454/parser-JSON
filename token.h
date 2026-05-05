@@ -14,7 +14,9 @@ enum class TokenType{
 
     STRING,
     INT,
-    BOOL
+    BOOL,
+    TRUE,
+    FALSE
 };
 class Token{
     public:

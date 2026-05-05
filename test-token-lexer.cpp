@@ -3,7 +3,7 @@
 #include "lexer.h"
 
 int main() {
-    Lexer lexer("{ :,\"test\"}");
+    Lexer lexer("{\"Name\":\"cats are cute\",\"age\": 123423,\"isAlive\": true}");
 
     while (true) {
         Token tok = lexer.NextToken();

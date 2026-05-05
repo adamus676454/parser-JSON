@@ -20,6 +20,8 @@ void Lexer::readChar(){
 
 // This the the actual function where we convert our string into tokens
 Token Lexer::NextToken(){
+    skipWhitespace();
+
     Token tok;
     switch(ch){
         case '{':
@@ -27,6 +29,12 @@ Token Lexer::NextToken(){
             break;
         case '}':
             tok = Token(TokenType::RBRACE, std::string(1, ch));
+            break;
+        case '[':
+            tok = Token(TokenType::LBRACK, std::string(1, ch));
+            break;
+        case ']':
+            tok = Token(TokenType::RBRACK, std::string(1, ch));
             break;
         case ':':
             tok = Token(TokenType::COLON, std::string(1, ch));
@@ -42,6 +50,26 @@ Token Lexer::NextToken(){
         case 0: // there is '\0' at the end of the string
             tok = Token(TokenType::END_OF_FILE, "");
             break;
+        default:
+            if(isLetter(ch)) { // do true / false
+                tok.literal = readIdentifier();
+                if (tok.literal == "true" || tok.literal == "false") {
+                        tok.type = TokenType::BOOL;
+                }
+                else{
+                    tok.type = TokenType::ILLEGAL;
+                }
+                return tok; // readIdentifier juz zrobil readChar()
+            }
+            else if(isDigit(ch)) {
+                tok.literal = readNumber();
+                tok.type = TokenType::INT;
+                return tok;
+            }
+            else{
+                tok = Token(TokenType::ILLEGAL, std::string(1,ch));
+            }
+            break;
     }
     readChar();
     return tok;
@@ -51,6 +79,33 @@ Token Lexer::NextToken(){
 std::string Lexer::readString(){
     std::string str;
     while(ch != '"'){
+        str += ch;
+        readChar();
+    }
+    return str;
+}
+void Lexer::skipWhitespace(){
+    while (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r') {
+        readChar();
+    }
+}
+bool Lexer::isLetter(char c){
+    return ('a' <= c and c <= 'z') or ('A' <= c and c <= 'Z');
+}
+std::string Lexer::readIdentifier(){
+    std::string str;
+    while(isLetter(ch)){
+        str += ch;
+        readChar();
+    }
+    return str;
+}
+bool Lexer::isDigit(char c){
+    return ('0' <= c and c <= '9');
+}
+std::string Lexer::readNumber(){
+    std::string str;
+    while(isDigit(ch)){
         str += ch;
         readChar();
     }

@@ -7,7 +7,13 @@ class Lexer{
     Lexer(std::string input);
     void readChar();
     Token NextToken();
+    void skipWhitespace();
+    std::string readIdentifier();
+    bool isLetter(char c);
     std::string readString();
+    bool isDigit(char c);
+    std::string readNumber(); // Odpowiednik realNumber() z poradnika w Go
+
     private:
     std::string input; // Input string is the string which we want to convert to json
     int position; // Position is the pointer that keeps track of what character we are reading
